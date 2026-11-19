@@ -117,7 +117,8 @@ def load_signal(path):
             if len(archive.files) != 2 or set(archive.files) != {'samples', 'sample_rate'}:
                 raise ValueError('в NPZ должны быть только samples и sample_rate')
             rate = archive['sample_rate']
-            if rate.shape != () or rate.dtype.kind not in 'fiu' or float(rate) != SAMPLE_RATE:
+            if (not isinstance(rate, np.ndarray) or rate.shape != ()
+                    or rate.dtype.kind not in 'fiu' or float(rate) != SAMPLE_RATE):
                 raise ValueError(f'частота дискретизации должна быть {SAMPLE_RATE} Гц')
             return _voltage_samples(archive['samples'])
     except (EOFError, BadZipFile, CompressionError, NotImplementedError, RuntimeError) as error:
